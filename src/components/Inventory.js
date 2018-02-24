@@ -3,7 +3,7 @@ import AddFishForm from './AddFishForm';
 import base from '../base';
 
 class Inventory extends React.Component {
-  constructor() {
+  constructor () {
     super();
     this.renderLogin = this.renderLogin.bind(this);
     this.renderInventory = this.renderInventory.bind(this);
@@ -15,19 +15,18 @@ class Inventory extends React.Component {
     this.state = {
       uid: null,
       owner: null
-    }
+    };
   }
 
-  componentDidMount() {
+  componentDidMount () {
     base.onAuth((user) => {
-      if(user) {
+      if (user) {
         this.authHandler(null, { user });
       }
-
     });
   }
 
-  handleChange(e, key) {
+  handleChange (e, key) {
     const fish = this.props.fishes[key];
 
     const updatedFish = {
@@ -38,17 +37,17 @@ class Inventory extends React.Component {
     this.props.updateFish(key, updatedFish);
   }
 
-  authenticate(provider) {
+  authenticate (provider) {
     base.authWithOAuthPopup(provider, this.authHandler);
   }
 
-  logout() {
+  logout () {
     base.unauth();
     this.setState({ uid: null });
   }
 
-  authHandler(err, authData) {
-    if(err) {
+  authHandler (err, authData) {
+    if (err) {
       console.error(err);
       return;
     }
@@ -57,7 +56,7 @@ class Inventory extends React.Component {
     storeRef.once('value', (snapshot) => {
       const data = snapshot.val() || {};
 
-      if(!data.owner) {
+      if (!data.owner) {
         storeRef.set({
           owner: authData.user.uid
         });
@@ -67,56 +66,53 @@ class Inventory extends React.Component {
         uid: authData.user.uid,
         owner: data.owner || authData.user.uid
       });
-        
-    })
-
+    });
   }
 
-  renderLogin() {
+  renderLogin () {
     return (
-      <nav className="login">
+      <nav className='login'>
         <h2>Inventory</h2>
         <p>Sign in to manage your store's inventory</p>
-        <button className="github" onClick={() => this.authenticate('github')}>
+        <button className='github' onClick={() => this.authenticate('github')}>
           Log In with GitHub
         </button>
-        <button className="facebook" onClick={() => this.authenticate('facebook')}>
+        <button className='facebook' onClick={() => this.authenticate('facebook')}>
           Log In with Facebook
         </button>
-        <button className="twitter" onClick={() => this.authenticate('twitter')}>
+        <button className='twitter' onClick={() => this.authenticate('twitter')}>
           Log In with twitter
         </button>
-        
+
       </nav>
-    )
+    );
   }
 
-
-  renderInventory(key) {
+  renderInventory (key) {
     const fish = this.props.fishes[key];
     return (
-      <div className="fish-edit" key={key}>
-        <input type="text" name="name" value={fish.name} placeholder="Fish Name" onChange={(e) => this.handleChange(e, key)} />
-        <input type="text" name="price" value={fish.price} placeholder="Fish Price" onChange={(e) => this.handleChange(e, key)} />
-        <select name="status" value={fish.status} onChange={(e) => this.handleChange(e, key)}>
-          <option value="available">Fresh!</option>
-          <option value="unavilable">Sold Out!</option>
+      <div className='fish-edit' key={key}>
+        <input type='text' name='name' value={fish.name} placeholder='Fish Name' onChange={(e) => this.handleChange(e, key)} />
+        <input type='text' name='price' value={fish.price} placeholder='Fish Price' onChange={(e) => this.handleChange(e, key)} />
+        <select name='status' value={fish.status} onChange={(e) => this.handleChange(e, key)}>
+          <option value='available'>Fresh!</option>
+          <option value='unavilable'>Sold Out!</option>
         </select>
-        <textarea name="desc" value={fish.desc} placeholder="Fish Desc"  onChange={(e) => this.handleChange(e, key)}/>
-        <input type="text" name="image" value={fish.image} placeholder="Fish Image" onChange={(e) => this.handleChange(e, key)} />
+        <textarea name='desc' value={fish.desc} placeholder='Fish Desc' onChange={(e) => this.handleChange(e, key)} />
+        <input type='text' name='image' value={fish.image} placeholder='Fish Image' onChange={(e) => this.handleChange(e, key)} />
         <button onClick={() => this.props.removeFish(key)}>Remove Fish</button>
       </div>
     );
   }
 
-  render() {
-    const logout = <button onClick={this.logout}>Log Out!</button>
+  render () {
+    const logout = <button onClick={this.logout}>Log Out!</button>;
 
-    if(!this.state.uid) {
-      return <div>{this.renderLogin()}</div>
+    if (!this.state.uid) {
+      return <div>{this.renderLogin()}</div>;
     }
 
-    if(this.state.uid !== this.state.owner) {
+    if (this.state.uid !== this.state.owner) {
       return (
         <div>
           <p>Sorry, you are not the owner of this store!</p>
@@ -144,6 +140,6 @@ Inventory.propTypes = {
   updateFish: React.PropTypes.func.isRequired,
   removeFish: React.PropTypes.func.isRequired,
   storeId: React.PropTypes.string.isRequired
-}
+};
 
 export default Inventory;
